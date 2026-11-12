@@ -1,0 +1,115 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
+    home: LoginPage(),
+  ));
+}
+
+// LOGIN MODULE
+class LoginPage extends StatelessWidget {
+  final u = TextEditingController();
+  final p = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("Student Login")),
+      body: Padding(
+        padding: EdgeInsets.all(20),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            TextField(controller: u,
+                decoration: InputDecoration(labelText: "Username")),
+            TextField(controller: p,
+                obscureText: true,
+                decoration: InputDecoration(labelText: "Password")),
+            ElevatedButton(
+              onPressed: () {
+                if (u.text.isNotEmpty && p.text.isNotEmpty) {
+                  Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (_) => MainPage()));
+                }
+              },
+              child: Text("Login"),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// MAIN MODULE
+class MainPage extends StatefulWidget {
+  @override
+  State<MainPage> createState() => _MainPageState();
+}
+
+class _MainPageState extends State<MainPage> {
+  int total = 10, attended = 8, page = 0;
+
+  double get percent => attended / total * 100;
+
+  void mark(bool present) {
+    setState(() {
+      total++;
+      if (present) attended++;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("Attendance Dashboard")),
+      body: page == 0
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text("Total Classes: $total"),
+                  Text("Attended: $attended"),
+                  Text("Attendance: ${percent.toStringAsFixed(1)}%"),
+                  LinearProgressIndicator(value: percent / 100),
+                  SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () => mark(true),
+                    child: Text("Mark Present")),
+                  ElevatedButton(
+                    onPressed: () => mark(false),
+                    child: Text("Mark Absent")),
+                ],
+              ),
+            )
+          : Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircleAvatar(child: Icon(Icons.person, size: 40)),
+                  Text("Name: Dinesh"),
+                  Text("Roll Number: 101"),
+                  Text("Department: CSE"),
+                  ElevatedButton(
+                    onPressed: () => Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (_) => LoginPage())),
+                    child: Text("Logout"),
+                  ),
+                ],
+              ),
+            ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: page,
+        onTap: (i) => setState(() => page = i),
+        items: [
+          BottomNavigationBarItem(
+              icon: Icon(Icons.home), label: "Attendance"),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.person), label: "Profile"),
+        ],
+      ),
+    );
+  }
+}
