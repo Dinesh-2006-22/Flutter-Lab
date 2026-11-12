@@ -1,0 +1,226 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
+    home: LoginPage(),
+  ));
+}
+
+// LOGIN MODULE
+class LoginPage extends StatelessWidget {
+  LoginPage({super.key});
+
+  final username = TextEditingController();
+  final password = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("Student Login")),
+      body: Padding(
+        padding: EdgeInsets.all(20),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            TextField(
+              controller: username,
+              decoration: InputDecoration(
+                labelText: "Username",
+                border: OutlineInputBorder(),
+              ),
+            ),
+            SizedBox(height: 15),
+            TextField(
+              controller: password,
+              obscureText: true,
+              decoration: InputDecoration(
+                labelText: "Password",
+                border: OutlineInputBorder(),
+              ),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                if (username.text.isNotEmpty &&
+                    password.text.isNotEmpty) {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MainPage(),
+                    ),
+                  );
+                }
+              },
+              child: Text("Login"),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// MAIN MODULE
+class MainPage extends StatefulWidget {
+  @override
+  State<MainPage> createState() => _MainPageState();
+}
+
+class _MainPageState extends State<MainPage> {
+
+  int total = 10;
+  int attended = 8;
+  int selected = 0;
+
+  double get percentage => total == 0 ? 0 : attended / total * 100;
+
+  void present() {
+    setState(() {
+      total++;
+      attended++;
+    });
+  }
+
+  void absent() {
+    setState(() {
+      total++;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
+    final pages = [
+
+      // DASHBOARD MODULE
+      Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text("Total Classes: $total",
+                style: TextStyle(fontSize: 22)),
+            Text("Attended: $attended",
+                style: TextStyle(fontSize: 22)),
+            SizedBox(height: 15),
+            Text(
+              "Attendance: ${percentage.toStringAsFixed(1)}%",
+              style: TextStyle(fontSize: 25, color: Colors.green),
+            ),
+            SizedBox(height: 20),
+            SizedBox(
+              width: 200,
+              child: LinearProgressIndicator(
+                value: percentage / 100,
+                minHeight: 10,
+              ),
+            ),
+          ],
+        ),
+      ),
+
+      // ATTENDANCE MANAGEMENT MODULE
+      Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text("Mark Attendance",
+                style: TextStyle(fontSize: 24)),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: present,
+              child: Text("Mark Present"),
+            ),
+            ElevatedButton(
+              onPressed: absent,
+              child: Text("Mark Absent"),
+            ),
+          ],
+        ),
+      ),
+
+      // REPORT MODULE
+      Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text("Attendance Report",
+                style: TextStyle(fontSize: 24)),
+            Text("Total: $total"),
+            Text("Present: $attended"),
+            Text("Absent: ${total - attended}"),
+            Text("Percentage: ${percentage.toStringAsFixed(1)}%"),
+          ],
+        ),
+      ),
+
+      // PROFILE MODULE
+      Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CircleAvatar(
+              radius: 40,
+              child: Icon(Icons.person, size: 45),
+            ),
+            SizedBox(height: 15),
+            Text("Name: Dinesh"),
+            Text("Roll Number: 101"),
+            Text("Department: CSE"),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => LoginPage(),
+                  ),
+                );
+              },
+              child: Text("Logout"),
+            ),
+          ],
+        ),
+      ),
+    ];
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Digital Attendance Dashboard"),
+        backgroundColor: Colors.blue,
+        foregroundColor: Colors.white,
+      ),
+
+      body: pages[selected],
+
+      // NAVIGATION MODULE
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: selected,
+        type: BottomNavigationBarType.fixed,
+        onTap: (index) {
+          setState(() {
+            selected = index;
+          });
+        },
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: "Home",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.check_circle),
+            label: "Attendance",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.bar_chart),
+            label: "Report",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: "Profile",
+          ),
+        ],
+      ),
+    );
+  }
+}
